@@ -68,8 +68,8 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
         hash = 5381
+        
         for char in key:
             hash = 33 * hash ^ ord(char)
         
