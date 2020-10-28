@@ -51,8 +51,8 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-        fnv_prime = 1099511628211
-        hash = 14695981039346656037
+        fnv_prime = 2**40 + 2**8 + int('0xb3', 16)
+        hash = 14695981039346656037 # 64 bit offset basis
         key_bytes = key.encode()
         
         for b in key_bytes:
@@ -69,15 +69,19 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
-        pass
+        hash = 5381
+        for char in key:
+            hash = 33 * hash ^ ord(char)
+        
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        return self.fnv1(key) % self.capacity
-        # return self.djb2(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
+        return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
