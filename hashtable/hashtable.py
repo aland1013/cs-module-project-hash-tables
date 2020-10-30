@@ -63,7 +63,7 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = capacity
+        self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
         self.table = [None] * capacity
 
 
@@ -182,7 +182,7 @@ class HashTable:
 
         Implement this.
         """
-        newTable = HashTable(new_capacity)
+        newTable = HashTable(new_capacity if new_capacity >= MIN_CAPACITY else MIN_CAPACITY)
         for slot in self.table:
             if slot:
                 curr = slot.head
