@@ -7,6 +7,48 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+    
+    def find(self, key):
+        curr = self.head
+        while curr != None:
+            if curr.key == key:
+                return curr
+            else:
+                curr = curr.next
+        return None
+    
+    def delete(self, key):
+        curr = self.head
+        prev = None
+        
+        if curr.key == key:
+            self.head = curr.next
+            curr.next = None
+            return curr
+        
+        while curr != None:
+            if curr.key == key:
+                prev.next = curr.next
+                curr.next = None
+                return curr
+            else:
+                prev = curr
+                curr = curr.next
+        
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+    
+    def insert_at_head_or_overwrite(self, node):
+        existingNode = self.find(node.key)
+        if existingNode:
+            existingNode.key = node.key
+            existingNode.value = node.value
+        else:
+            self.insert_at_head(node)
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -22,7 +64,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
-        self.table = [None] * capacity
+        self.table = [LinkedList()] * capacity
 
 
     def get_num_slots(self):
@@ -91,10 +133,11 @@ class HashTable:
 
         Implement this.
         """
+        newNode = HashTableEntry(key, value)
         i = self.hash_index(key)
-        self.table[i] = value
-
-
+        ll = self.table[i]
+        ll.insert_at_head_or_overwrite(newNode)
+        
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -104,11 +147,10 @@ class HashTable:
         Implement this.
         """
         i = self.hash_index(key)
-        if self.table[i]:
-            self.table[i] = None
-        else:
+        ll = self.table[i]
+        deletedNode = ll.delete(key)
+        if not deletedNode:
             print(f'{key} not found')
-
 
     def get(self, key):
         """
@@ -119,8 +161,13 @@ class HashTable:
         Implement this.
         """
         i = self.hash_index(key)
-        return self.table[i] if self.table[i] else None
-
+        ll = self.table[i]
+        node = ll.find(key)
+        
+        if node:
+            return node.value
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
