@@ -64,7 +64,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
-        self.table = [LinkedList()] * capacity
+        self.table = [None] * capacity
 
 
     def get_num_slots(self):
@@ -85,10 +85,12 @@ class HashTable:
 
         Implement this.
         """
-        items = 0
-        for slot in self.table:
-            items += len(slot)
-        return items / self.capacity
+        occupied_slots = 0
+        for i in range(self.capacity):
+            if self.table[i] != None:
+                occupied_slots += 1
+        
+        return occupied_slots / self.capacity
 
     def fnv1(self, key):
         """
@@ -138,8 +140,12 @@ class HashTable:
         """
         newNode = HashTableEntry(key, value)
         i = self.hash_index(key)
-        ll = self.table[i]
-        ll.insert_at_head_or_overwrite(newNode)
+        if not self.table[i]:
+            self.table[i] = LinkedList()
+        self.table[i].insert_at_head_or_overwrite(newNode)
+        
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
         
     def delete(self, key):
         """
@@ -178,10 +184,11 @@ class HashTable:
         """
         newTable = HashTable(new_capacity)
         for slot in self.table:
-            curr = slot.head
-            while curr:
-                newTable.put(curr.key, curr.value)
-                curr = curr.next
+            if slot:
+                curr = slot.head
+                while curr:
+                    newTable.put(curr.key, curr.value)
+                    curr = curr.next
         
         self.capacity = new_capacity
         self.table = newTable.table
