@@ -64,7 +64,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
-        self.table = [None] * capacity
+        self.table = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -160,6 +160,11 @@ class HashTable:
         deletedNode = ll.delete(key)
         if not deletedNode:
             print(f'{key} not found')
+        if ll.head == None:
+            self.table[i] = None
+        
+        if self.get_load_factor() < 0.2:
+            self.resize(self.capacity // 2)
 
     def get(self, key):
         """
@@ -171,6 +176,10 @@ class HashTable:
         """
         i = self.hash_index(key)
         ll = self.table[i]
+        
+        if not ll:
+            return None
+        
         node = ll.find(key)
         
         return node.value if node else None
@@ -190,7 +199,7 @@ class HashTable:
                     newTable.put(curr.key, curr.value)
                     curr = curr.next
         
-        self.capacity = new_capacity
+        self.capacity = new_capacity if new_capacity >= MIN_CAPACITY else MIN_CAPACITY
         self.table = newTable.table
                 
 
@@ -229,3 +238,5 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
+
