@@ -87,7 +87,7 @@ class HashTable:
         """
         occupied_slots = 0
         for i in range(self.capacity):
-            if self.table[i] != None:
+            if self.table[i]:
                 occupied_slots += 1
         
         return occupied_slots / self.capacity
