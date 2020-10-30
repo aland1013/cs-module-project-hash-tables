@@ -85,7 +85,10 @@ class HashTable:
 
         Implement this.
         """
-        pass
+        items = 0
+        for slot in self.table:
+            items += len(slot)
+        return items / self.capacity
 
     def fnv1(self, key):
         """
@@ -173,8 +176,16 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        newTable = HashTable(new_capacity)
+        for slot in self.table:
+            curr = slot.head
+            while curr:
+                newTable.put(curr.key, curr.value)
+                curr = curr.next
+        
+        self.capacity = new_capacity
+        self.table = newTable.table
+                
 
 
 if __name__ == "__main__":
