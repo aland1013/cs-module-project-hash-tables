@@ -164,10 +164,7 @@ class HashTable:
         ll = self.table[i]
         node = ll.find(key)
         
-        if node:
-            return node.value
-        else:
-            return None
+        return node.value if node else None
 
     def resize(self, new_capacity):
         """
