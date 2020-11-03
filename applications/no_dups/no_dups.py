@@ -1,6 +1,14 @@
+from collections import defaultdict
+
 def no_dups(s):
     # Your code here
-
+    d = defaultdict(int)
+    arr = s.split()
+    
+    for word in arr:
+        d[word] += 1
+    
+    return ' '.join(d.keys())
 
 
 if __name__ == "__main__":
