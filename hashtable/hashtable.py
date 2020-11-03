@@ -47,8 +47,10 @@ class LinkedList:
         if existingNode:
             existingNode.key = node.key
             existingNode.value = node.value
+            return False
         else:
             self.insert_at_head(node)
+            return True
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -65,6 +67,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
         self.table = [None] * self.capacity
+        self.num_elements = 0
 
 
     def get_num_slots(self):
@@ -85,12 +88,8 @@ class HashTable:
 
         Implement this.
         """
-        occupied_slots = 0
-        for i in range(self.capacity):
-            if self.table[i]:
-                occupied_slots += 1
-        
-        return occupied_slots / self.capacity
+                
+        return self.num_elements / self.capacity
 
     def fnv1(self, key):
         """
@@ -142,7 +141,10 @@ class HashTable:
         i = self.hash_index(key)
         if not self.table[i]:
             self.table[i] = LinkedList()
-        self.table[i].insert_at_head_or_overwrite(newNode)
+        did_add_new_node = self.table[i].insert_at_head_or_overwrite(newNode)
+        
+        if did_add_new_node:
+            self.num_elements += 1
         
         if self.get_load_factor() > 0.7:
             self.resize(self.capacity * 2)
@@ -160,11 +162,15 @@ class HashTable:
         deletedNode = ll.delete(key)
         if not deletedNode:
             print(f'{key} not found')
-        if ll.head == None:
-            self.table[i] = None
         
-        if self.get_load_factor() < 0.2:
-            self.resize(self.capacity // 2)
+        else:
+            self.num_elements -= 1
+            
+            if ll.head == None:
+                self.table[i] = None
+        
+            if self.get_load_factor() < 0.2:
+                self.resize(self.capacity // 2)
 
     def get(self, key):
         """
