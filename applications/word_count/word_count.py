@@ -1,5 +1,21 @@
+from collections import defaultdict
+import re
+
 def word_count(s):
     # Your code here
+    d = defaultdict(int)
+    s = s.lower()
+    arr = s.split()
+    
+    for word in arr:
+        try:
+            w = re.search('[\w\']+', word).group()
+            d[w] += 1
+            
+        except:
+            pass
+    
+    return d    
 
 
 
